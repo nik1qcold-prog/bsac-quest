@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Один день в БГАС | Веб-квест</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .game-container {
+            width: 100%;
+            max-width: 600px;
+            height: 95vh;
+            max-height: 850px;
+            background: #0f172a;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 2px solid #3b82f6;
+        }
+        .screen-header {
+            background: #1e293b;
+            padding: 15px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #60a5fa;
+            border-bottom: 1px solid #334155;
+        }
+        .visual-area {
+            flex: 1;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 20px;
+            transition: background-image 0.5s ease-in-out;
+        }
+        .character-box {
+            position: absolute;
+            bottom: 15px;
+            left: 20px;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 8px 16px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+            font-size: 18px;
+            font-weight: bold;
+            color: #93c5fd;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .dialogue-panel {
+            background: #1e293b;
+            padding: 20px;
+            border-top: 2px solid #334155;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .dialogue-text {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #e2e8f0;
+            margin-bottom: 15px;
+            min-height: 70px;
+        }
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .choice-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .choice-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="screen-header">
+            УО «Белорусская государственная академия связи» • БГАС
+        </div>
+        
+        <!-- Динамическая зона с фоновым изображением -->
+        <div class="visual-area" id="visual-area" style="background-image: url('academy.jpg');">
+            <div class="character-box" id="char-name">Катя (Студентка 2 курса)</div>
+        </div>
+
+        <div class="dialogue-panel">
+            <div class="dialogue-text" id="dialogue-text">
+                Загрузка новеллы...
+            </div>
+            <div class="choices-container" id="choices-container">
+                <!-- Кнопки выбора -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const story = {
+            start: {
+                name: "Катя (Студентка 2 курса)",
+                image: "academy.jpg", // Показываем академию на входе
+                text: "✨ Привет! Ты, наверное, тоже на поступление? Я — Катя. Давай я покажу тебе академию и расскажу про крутые специальности? Ты же наверняка еще не до конца определилась, куда хочешь поступить?",
+                choices: [
+                    { text: "💬 С удовольствием! Мне как раз нужна помощь.", next: "meet_yes" },
+                    { text: "🚶‍♀️ Спасибо, я пока сама разберусь.", next: "meet_no" }
+                ]
+            },
+            meet_yes: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg", // Переключаемся на портрет Катюши во дворе
+                text: "Отлично! Отправляемся на факультет инжиниринга и технологий связи, на кафедру цифровой экономики. Сейчас я учусь на супер-популярном направлении — <b>«Маркетинг» (профилизация «Цифровой маркетинг»)</b>. Что тебя больше всего интересует?",
+                choices: [
+                    { text: "📚 Что вообще такое «Цифровой маркетинг»?", next: "q_about" },
+                    { text: "🎯 Какие предметы нужно сдавать для поступления?", next: "q_exams" },
+                    { text: "💼 Кем я буду работать после академии?", next: "q_job" },
+                    { text: "🏁 Завершить ознакомительный день", next: "finish" }
+                ]
+            },
+            meet_no: {
+                name: "Катя (Студентка 2 курса)",
+                image: "academy.jpg",
+                text: "Ну хорошо-хорошо, гордая самостоятельность — это тоже неплохо! 😉 Но в БГАС столько корпусов и нюансов поступления, что с проводником точно проще. Давай начнем сначала?",
+                choices: [
+                    { text: "🔄 Послушать Катю", next: "start" }
+                ]
+            },
+            q_about: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg",
+                text: "📱 Это не просто скучная экономика из учебников. Это про создание контента, таргет, SMM, аналитику больших данных и интернет-бизнес. Ты научишься разбираться, как работают алгоритмы соцсетей и как выводить IT-продукты на рынок!",
+                choices: [
+                    { text: "◀️ Задать другой вопрос", next: "meet_yes" },
+                    { text: "🏁 Завершить день в БГАС", next: "finish" }
+                ]
+            },
+            q_exams: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg",
+                text: "📝 Чтобы поступить на маркетинг в БГАС, нужно сдавать ЦЭ или ЦТ по трем предметам:<br>1️⃣ Белорусский или русский язык<br>2️⃣ Математика<br>3️⃣ Иностранный язык<br><br><i>Готовься заранее, и всё получится!</i>",
+                choices: [
+                    { text: "◀️ Задать другой вопрос", next: "meet_yes" },
+                    { text: "🏁 Завершить день в БГАС", next: "finish" }
+                ]
+            },
+            q_job: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg",
+                text: "💼 Квалификация после окончания — <b>маркетолог-экономист</b>. Ты сможешь работать интернет-маркетологом, бренд-менеджером, специалистом по контекстной рекламе, аналитиком или открыть свое digital-агентство!",
+                choices: [
+                    { text: "◀️ Задать другой вопрос", next: "meet_yes" },
+                    { text: "🏁 Завершить день в БГАС", next: "finish" }
+                ]
+            },
+            finish: {
+                name: "Катя (Студентка 2 курса)",
+                image: "academy.jpg",
+                text: "✨ Конец ознакомительного дня в БГАС! Надеюсь, этот мини-день помог тебе понять, что у нас круто. Ждем тебя в числе наших студентов! Твой осознанный выбор сделан? 😉",
+                choices: [
+                    { text: "🔄 Пройти новеллу заново", next: "start" }
+                ]
+            }
+        };
+
+        function showScene(sceneKey) {
+            const scene = story[sceneKey];
+            document.getElementById('char-name').innerText = scene.name;
+            document.getElementById('dialogue-text').innerHTML = scene.text;
+            
+            // Меняем фоновую картинку под текущую сцену
+            document.getElementById('visual-area').style.backgroundImage = `url('${scene.image}')`;
+            
+            const container = document.getElementById('choices-container');
+            container.innerHTML = '';
+            
+            scene.choices.forEach(choice => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.innerHTML = choice.text;
+                btn.onclick = () => showScene(choice.next);
+                container.appendChild(btn);
+            });
+        }
+
+        // Запуск новеллы
+        showScene('start');
+    </script>
+</body>
+</html>
