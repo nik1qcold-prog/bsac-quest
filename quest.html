@@ -12,8 +12,9 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #fff;
+            /* Теплый уютный градиент вместо холодного синего */
+            background: linear-gradient(135deg, #2b1d1a 0%, #1a1412 100%);
+            color: #f3e8df;
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -25,27 +26,27 @@
             max-width: 600px;
             height: 95vh;
             max-height: 850px;
-            background: #0f172a;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            background: #231916;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            border: 2px solid #3b82f6;
+            border: 1px solid rgba(212, 163, 115, 0.3);
         }
         .screen-header {
-            background: #1e293b;
-            padding: 10px;
+            background: #2b1d1a;
+            padding: 12px;
             text-align: center;
-            font-size: 14px;
-            font-weight: bold;
-            color: #60a5fa;
-            border-bottom: 1px solid #334155;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #d4a373;
+            border-bottom: 1px solid rgba(212, 163, 115, 0.15);
             flex-shrink: 0;
         }
-        /* Увеличили область картинки, чтобы она занимала больше пространства */
         .visual-area {
-            flex: 2; 
+            flex: 2;
             background-size: cover;
             background-position: center;
             position: relative;
@@ -54,28 +55,29 @@
             justify-content: center;
             padding: 15px;
             transition: background-image 0.5s ease-in-out;
-            min-height: 250px;
+            min-height: 260px;
         }
-        /* Уменьшили и аккуратно оформили плашку с именем */
+        /* Аккуратная стеклянная плашка с именем Кати */
         .character-box {
             position: absolute;
             top: 15px;
             left: 15px;
-            background: rgba(15, 23, 42, 0.85);
-            padding: 5px 12px;
-            border-radius: 8px;
-            border-left: 3px solid #3b82f6;
-            font-size: 14px;
-            font-weight: bold;
-            color: #93c5fd;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            background: rgba(35, 25, 22, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 12px;
+            border-left: 3px solid #d4a373;
+            font-size: 13px;
+            font-weight: 600;
+            color: #faedcd;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
-        /* Панель диалогов стала компактнее, чтобы больше места отдавать картинке */
+        /* Мягкая нижняя панель диалогов */
         .dialogue-panel {
             flex: 1.2;
-            background: #1e293b;
-            padding: 15px 20px;
-            border-top: 2px solid #334155;
+            background: #2b1d1a;
+            padding: 18px 22px;
+            border-top: 1px solid rgba(212, 163, 115, 0.2);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -83,29 +85,32 @@
         }
         .dialogue-text {
             font-size: 14px;
-            line-height: 1.35;
-            color: #e2e8f0;
-            margin-bottom: 8px;
+            line-height: 1.45;
+            color: #fefae0;
+            margin-bottom: 10px;
         }
         .choices-container {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
+        /* Приятные теплые кнопки с мягким наведением */
         .choice-btn {
-            background: #2563eb;
-            color: white;
+            background: #dda15e;
+            color: #2b1d1a;
             border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 10px 14px;
+            border-radius: 12px;
             font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: left;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         .choice-btn:hover {
-            background: #1d4ed8;
+            background: #bc6c25;
+            color: #fff;
             transform: translateY(-2px);
         }
     </style>
@@ -181,7 +186,6 @@
                 ]
             },
 
-            // ЛОКАЦИЯ 1 (С Катей)
             tour_lab1: {
                 name: "Катя (Студентка 2 курса)",
                 image: "academy.jpg",
@@ -190,7 +194,6 @@
                     { text: "👉 Перейти к Лаборатории биометрии", next: "tour_lab2" }
                 ]
             },
-            // ЛОКАЦИЯ 2 (С Катей)
             tour_lab2: {
                 name: "Катя (Студентка 2 курса)",
                 image: "academy.jpg",
@@ -218,7 +221,6 @@
                 ]
             },
 
-            // ВЕТКА САМОСТОЯТЕЛЬНОЙ ПРОГУЛКИ
             meet_no: {
                 name: "Самостоятельная прогулка",
                 image: "academy.jpg",
