@@ -25,8 +25,8 @@ body { background: linear-gradient(135deg, #2b1d1a 0%, #1a1412 100%); color: #f3
     <div class="dialogue-panel">
         <div class="dialogue-text" id="dialogue-text">👋 Добро пожаловать в веб-квест по УО «Белорусская государственная академия связи»! Перед началом выберите, за кого вы будете играть:</div>
         <div class="choices-container" id="choices-container">
-            <button class="choice-btn" id="btn-male" type="button">👨‍🎓 Играть за парня (абитуриент)</button>
-            <button class="choice-btn" id="btn-female" type="button">👩‍🎓 Играть за девушку (абитуриентка)</button>
+            <button class="choice-btn" id="btn-male" type="button" onclick="startQuest('male')">👨‍🎓 Играть за парня (абитуриент)</button>
+            <button class="choice-btn" id="btn-female" type="button" onclick="startQuest('female')">👩‍🎓 Играть за девушку (абитуриентка)</button>
         </div>
     </div>
 </div>
@@ -355,16 +355,8 @@ const story = {
         image: "wardrobe.jpg",
         text: "📍 <b>Вы зашли в гардероб академии. Здесь можно оставить верхнюю одежду. Куда направитесь дальше?</b>",
         choices: [
-            { text: "🏛 Пройти в главный холл", next: "solo_hall" }
-        ]
-    },
-    solo_hall: {
-        name: "Холл академии",
-        image: "corridor.jpg",
-        text: "📍 <b>Вы находитесь в главном холле Академии связи. Перед Вами несколько дверей. Куда направитесь?</b>",
-        choices: [
-            { text: "🔐 Лаборатория биометрии", next: "solo_lab1" },
             { text: "🧪 Лаборатория SMART-технологий и 3D", next: "solo_lab2" },
+            { text: "🔐 Лаборатория биометрии", next: "solo_lab1" },
             { text: "🍽 Заглянуть в студенческую столовую", next: "solo_canteen" },
             { text: "🎓 Зайти в учебную аудиторию (идет пара)", next: "class_room_intro" },
             { text: "🏁 Завершить прогулку и выйти", next: "finish_game_over" }
@@ -375,7 +367,7 @@ const story = {
         image: "lab_3d.jpg",
         text: "А это — учебная лаборатория биометрической идентификации и видеоаналитики. На стенах умные камеры, которые распознают лица и анализируют толпу!",
         choices: [
-            { text: "◀️ Вернуться в главный холл", next: "solo_hall" }
+            { text: "◀️ Вернуться назад", next: "solo_wardrobe" }
         ]
     },
     solo_lab2: {
@@ -383,7 +375,7 @@ const story = {
         image: "lab_bio.jpg",
         text: "Смотри, это многофункциональная лаборатория SMART-технологий и 3D моделирования. Здесь всё современно: 3D-принтеры, датчики, микроконтроллеры и система «Умный дом»!",
         choices: [
-            { text: "◀️ Вернуться в главный холл", next: "solo_hall" }
+            { text: "◀️ Вернуться назад", next: "solo_wardrobe" }
         ]
     },
     solo_canteen: {
@@ -391,7 +383,7 @@ const story = {
         image: "canteen.jpg",
         text: "<b>Студенческая столовая</b><br>Аромат свежей выпечки и горячего обеда привлекает студентов на перерыве.",
         choices: [
-            { text: "◀️ Вернуться в главный холл", next: "solo_hall" }
+            { text: "◀️ Вернуться назад", next: "solo_wardrobe" }
         ]
     }
 };
@@ -421,15 +413,10 @@ function showScene(sceneKey) {
         btn.className = 'choice-btn';
         btn.type = 'button';
         btn.innerHTML = choice.text;
-        btn.addEventListener('click', function() { showScene(choice.next); });
+        btn.onclick = function() { showScene(choice.next); };
         container.appendChild(btn);
     });
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('btn-male').addEventListener('click', function() { startQuest('male'); });
-    document.getElementById('btn-female').addEventListener('click', function() { startQuest('female'); });
-});
 </script>
 </body>
 </html>
