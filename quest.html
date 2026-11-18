@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Один день в БГАС | Веб-квест</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .game-container {
+            width: 100%;
+            max-width: 600px;
+            height: 95vh;
+            max-height: 850px;
+            background: #0f172a;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 2px solid #3b82f6;
+        }
+        .screen-header {
+            background: #1e293b;
+            padding: 15px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #60a5fa;
+            border-bottom: 1px solid #334155;
+        }
+        .visual-area {
+            flex: 1;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 20px;
+            transition: background-image 0.5s ease-in-out;
+        }
+        .character-box {
+            position: absolute;
+            bottom: 15px;
+            left: 20px;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 8px 16px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+            font-size: 18px;
+            font-weight: bold;
+            color: #93c5fd;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .dialogue-panel {
+            background: #1e293b;
+            padding: 20px;
+            border-top: 2px solid #334155;
+            min-height: 200px;
+            max-height: 260px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .dialogue-text {
+            font-size: 15px;
+            line-height: 1.4;
+            color: #e2e8f0;
+            margin-bottom: 12px;
+        }
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .choice-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .choice-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="screen-header">
+            УО «Белорусская государственная академия связи» • БГАС
+        </div>
+        
+        <div class="visual-area" id="visual-area" style="background-image: url('academy.jpg');">
+            <div class="character-box" id="char-name">Катя (Студентка 2 курса)</div>
+        </div>
+
+        <div class="dialogue-panel">
+            <div class="dialogue-text" id="dialogue-text">
+                Загрузка новеллы...
+            </div>
+            <div class="choices-container" id="choices-container">
+                <!-- Кнопки выбора -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const story = {
+            start: {
+                name: "Катя (Студентка 2 курса)",
+                image: "academy.jpg",
+                text: "✨ Привет! Ты, наверное, тоже на поступление? Я — Катя. БГАС — это не просто учебные классы, здесь реально кипит жизнь. Давай я покажу тебе академию и расскажу про крутые специальности?",
+                choices: [
+                    { text: "💬 С удовольствием! Мне нужна помощь.", next: "meet_yes" },
+                    { text: "🚶‍♀️ Спасибо, я пока сама разберусь.", next: "meet_no" }
+                ]
+            },
+            meet_yes: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg",
+                text: "Отлично! Отправляемся на факультет инженерии и технологий связи, на кафедру цифровой экономики. Сейчас я учусь на супер-популярном направлении — <b>«Маркетинг» (профилизация «Цифровой маркетинг»)</b>. Что тебя больше всего интересует?",
+                choices: [
+                    { text: "🧠 Что вообще такое «Цифровой маркетинг»?", next: "q_about" },
+                    { text: "🎯 Какие предметы нужно сдавать для поступления?", next: "q_exams" },
+                    { text: "💼 Кем я буду работать после академии?", next: "q_job" },
+                    { text: "🏃‍♀️ Давай просто прогуляемся по Академии! (Лаборатории)", next: "tour_lab1" }
+                ]
+            },
+            q_about: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg",
+                text: "📱 Это не просто скучная экономика из учебников. Это создание контента, таргет, SMM, аналитика больших данных и интернет-бизнес. Ты научишься управлять алгоритмами соцсетей!",
+                choices: [
+                    { text: "◀️ Вернуться к выбору вопросов", next: "meet_yes" },
+                    { text: "🏃‍♀️ Пойдем на прогулку по лабораториям!", next: "tour_lab1" }
+                ]
+            },
+            q_exams: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg",
+                text: "📝 Для поступления на маркетинг в БГАС нужно сдавать три предмета (ЦЭ/ЦТ):<br>1️⃣ Белорусский или русский язык<br>2️⃣ Математика<br>3️⃣ Иностранный язык",
+                choices: [
+                    { text: "◀️ Вернуться к выбору вопросов", next: "meet_yes" },
+                    { text: "🏃‍♀️ Пойдем на прогулку по лабораториям!", next: "tour_lab1" }
+                ]
+            },
+            q_job: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg",
+                text: "💼 Квалификация — <b>маркетолог-экономист</b>. Ты сможешь работать интернет-маркетологом, бренд-менеджером, специалистом по контекстной рекламе или открыть свое digital-агентство!",
+                choices: [
+                    { text: "◀️ Вернуться к выбору вопросов", next: "meet_yes" },
+                    { text: "🏃‍♀️ Пойдем на прогулку по лабораториям!", next: "tour_lab1" }
+                ]
+            },
+
+            // ЭКСКУРСИЯ ПО ЛАБОРАТОРИЯМ
+            tour_lab1: {
+                name: "Катя (Студентка 2 курса)",
+                image: "academy.jpg",
+                text: "С радостью! Здесь есть на что посмотреть. Пойдем, я покажу тебе наши самые крутые локации.<br><br><b>Локация 1: Лаборатория SMART-технологий и 3D моделирования.</b> Здесь всё современно: 3D-принтеры, датчики, микроконтроллеры. И у нас тут есть система «Умный дом» с Алисой!",
+                choices: [
+                    { text: "👉 Дальше: Лаборатория биометрии", next: "tour_lab2" }
+                ]
+            },
+            tour_lab2: {
+                name: "Катя (Студентка 2 курса)",
+                image: "academy.jpg",
+                text: "А это — <b>учебная лаборатория биометрической идентификации и видеоаналитики</b>. Здесь всё, как в хорошем детективе! На стенах умные камеры, которые распознают лица и анализируют толпу. Студенты учатся настраивать системы безопасности.",
+                choices: [
+                    { text: "🍲 Заглянуть в столовую после экскурсии", next: "canteen" }
+                ]
+            },
+            canteen: {
+                name: "Катя (Студентка 2 курса)",
+                image: "academy.jpg",
+                text: "После такой насыщенной экскурсии нужно подкрепиться! Это наша столовая. Здесь всегда свежая выпечка, супы и вторые блюда. Цены студенческие, порции большие. Что будешь?",
+                choices: [
+                    { text: "🥐 Взять свежую булочку и чай", next: "class_room" },
+                    { text: "🍲 Взять полноценный обед (суп и второе)", next: "class_room" },
+                    { text: "🚶‍♂️ Просто осмотреться и пойти дальше", next: "class_room" }
+                ]
+            },
+            class_room: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg",
+                text: "Ой, как быстро пролетело время! 🕐 Смотри, уже начинается моя первая пара. Пойдем скорее в аудиторию!<br><br>Вот здесь мы и учимся! Садись за парту. Сегодня у нас практика по цифровому маркетингу: преподаватель вывел на экран задание — <i>«Разработать стратегию продвижения мобильного приложения БГАС»</i>.",
+                choices: [
+                    { text: "✨ Завершить ознакомительный день в БГАС", next: "finish" }
+                ]
+            },
+
+            // САМОСТОЯТЕЛЬНАЯ ВЕТКА
+            meet_no: {
+                name: "Катя (Студентка 2 курса)",
+                image: "academy.jpg",
+                text: "Ну хорошо-хорошо, гордая самостоятельность — это тоже неплохо! 😉 Я побежала на пару, а ты гуляй, куда захочешь. Удачи!<br><br>📍 <i>Вы находитесь в главном холле Академии связи. Перед вами несколько дверей. Куда направитесь?</i>",
+                choices: [
+                    { text: "🧪 Зайти в лабораторию SMART-технологий и 3D", next: "solo_lab1" },
+                    { text: "🔐 Зайти в лабораторию биометрии", next: "solo_lab2" },
+                    { text: "🍽 Заглянуть в студенческую столовую", next: "solo_canteen" },
+                    { text: "🎓 Зайти в учебную аудиторию (на пару)", next: "class_room" },
+                    { text: "🏁 Завершить прогулку и выйти", next: "finish" }
+                ]
+            },
+            solo_lab1: {
+                name: "Самостоятельная прогулка",
+                image: "academy.jpg",
+                text: "Вы зашли в лабораторию SMART-технологий. Вокруг гудят 3D-принтеры, на стендах мигают светодиоды умного дома. Атмосфера настоящего технопарка!",
+                choices: [
+                    { text: "◀️ Вернуться в холл", next: "meet_no" }
+                ]
+            },
+            solo_lab2: {
+                name: "Самостоятельная прогулка",
+                image: "academy.jpg",
+                text: "Вы в лаборатории биометрической идентификации. Камера на входе зафиксировала ваше появление и вывела параметры на монитор. Очень футуристично!",
+                choices: [
+                    { text: "◀️ Вернуться в холл", next: "meet_no" }
+                ]
+            },
+            solo_canteen: {
+                name: "Самостоятельная прогулка",
+                image: "academy.jpg",
+                text: "В студенческой столовой пахнет свежей выпечкой и ароматным чаем. Студенты отдыхают между парами и обсуждают проекты.",
+                choices: [
+                    { text: "◀️ Вернуться в холл", next: "meet_no" }
+                ]
+            },
+
+            finish: {
+                name: "Катя (Студентка 2 курса)",
+                image: "academy.jpg",
+                text: "✨ Конец ознакомительного дня в БГАС! Надеюсь, этот квест помог тебе понять, как у нас круто. Ждем тебя в числе наших студентов! Твой выбор сделан? 😉",
+                choices: [
+                    { text: "🔄 Пройти новеллу заново", next: "start" }
+                ]
+            }
+        };
+
+        function showScene(sceneKey) {
+            const scene = story[sceneKey];
+            document.getElementById('char-name').innerText = scene.name;
+            document.getElementById('dialogue-text').innerHTML = scene.text;
+            document.getElementById('visual-area').style.backgroundImage = `url('${scene.image}')`;
+            
+            const container = document.getElementById('choices-container');
+            container.innerHTML = '';
+            
+            scene.choices.forEach(choice => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.innerHTML = choice.text;
+                btn.onclick = () => showScene(choice.next);
+                container.appendChild(btn);
+            });
+        }
+
+        // Запуск новеллы
+        showScene('start');
+    </script>
+</body>
+</html>
