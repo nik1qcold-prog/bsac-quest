@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Один день в БГАС | Веб-квест</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #2b1d1a 0%, #1a1412 100%);
+            color: #f3e8df;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .game-container {
+            width: 100%;
+            max-width: 600px;
+            height: 95vh;
+            max-height: 850px;
+            background: #231916;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid rgba(212, 163, 115, 0.3);
+        }
+        .screen-header {
+            background: #2b1d1a;
+            padding: 12px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #d4a373;
+            border-bottom: 1px solid rgba(212, 163, 115, 0.15);
+            flex-shrink: 0;
+        }
+        .visual-area {
+            flex: 2;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 15px;
+            transition: background-image 0.5s ease-in-out;
+            min-height: 260px;
+            background-image: url('academy.jpg');
+        }
+        .character-box {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(35, 25, 22, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 12px;
+            border-left: 3px solid #d4a373;
+            font-size: 13px;
+            font-weight: 600;
+            color: #faedcd;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .dialogue-panel {
+            flex: 1.2;
+            background: #2b1d1a;
+            padding: 18px 22px;
+            border-top: 1px solid rgba(212, 163, 115, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto;
+        }
+        .dialogue-text {
+            font-size: 14px;
+            line-height: 1.45;
+            color: #fefae0;
+            margin-bottom: 10px;
+        }
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .choice-btn {
+            background: #dda15e;
+            color: #2b1d1a;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .choice-btn:hover {
+            background: #bc6c25;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <div class="screen-header">
+            УО «Белорусская государственная академия связи» • БГАС
+        </div>
+        
+        <div class="visual-area" id="visual-area">
+            <div class="character-box" id="char-name">БГАС</div>
+        </div>
+
+        <div class="dialogue-panel">
+            <div class="dialogue-text" id="dialogue-text">👋 Добро пожаловать в веб-квест по УО «Белорусская государственная академия связи»! Перед началом выберите, за кого вы будете играть:</div>
+            <div class="choices-container" id="choices-container">
+                <button class="choice-btn" onclick="chooseGender('male')">👨‍🎓 Играть за парня (абитуриент)</button>
+                <button class="choice-btn" onclick="chooseGender('female')">👩‍🎓 Играть за девушку (абитуриентка)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let correctCount = 0;
+        let playerGender = 'male';
+
+        const story = {
+            start: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg",
+                text: "✨ Привет! Ты, наверное, тоже на поступление? Я — Катя, студентка 2 курса. Давай я покажу тебе академию? Ты, наверное, ещё не ориентируешься тут.",
+                choices: [
+                    { text: "💬 С удовольствием! Мне как раз нужна помощь.", next: "spec_choice" },
+                    { text: "🚶‍♀️ Спасибо, я пока сам разберусь.", next: "meet_no_start" }
+                ]
+            },
+            spec_choice: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg",
+                text: "Отлично! Сразу определимся. Наша специальность — «Цифровой маркетинг». Самое то для современного специалиста!",
+                choices: [
+                    { text: "📈 Отлично, пошли дальше!", next: "meet_yes" }
+                ]
+            },
+            meet_yes: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg",
+                text: "Здорово! Я как раз учусь на направлении Цифровой маркетинг. Можешь задать мне пару вопросов!",
+                choices: [
+                    { text: "🧠 Что вообще такое «Цифровой маркетинг»?", next: "q_about" },
+                    { text: "🎯 Какие предметы нужно сдавать для поступления?", next: "q_exams" },
+                    { text: "💼 Кем я буду работать после академии?", next: "q_job" },
+                    { text: "🏃‍♀️ Давай просто прогуляемся по Академии!", next: "guard_check" }
+                ]
+            },
+            q_about: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg",
+                text: "Это создание контента, таргет, SMM, аналитика больших данных и интернет-бизнес. Ты научишься управлять алгоритмами соцсетей!",
+                choices: [
+                    { text: "◀️ Вернуться к выбору вопросов", next: "meet_yes" },
+                    { text: "🏃‍♀️ Давай просто прогуляемся по Академии!", next: "guard_check" }
+                ]
+            },
+            q_exams: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg",
+                text: "Для поступления нужно сдавать три предмета: белорусский/русский язык, математику и иностранный язык.",
+                choices: [
+                    { text: "◀️ Вернуться к выбору вопросов", next: "meet_yes" },
+                    { text: "🏃‍♀️ Давай просто прогуляемся по Академии!", next: "guard_check" }
+                ]
+            },
+            q_job: {
+                name: "Катя (Студентка 2 курса)",
+                image: "katya.jpg",
+                text: "Ты сможешь работать интернет-маркетологом, бренд-менеджером, специалистом по рекламе или открыть свое digital-агентство!",
+                choices: [
+                    { text: "◀️ Вернуться к выбору вопросов", next: "meet_yes" },
+                    { text: "🏃‍♀️ Давай просто прогуляемся по Академии!", next: "guard_check" }
+                ]
+            },
+            guard_check: {
+                name: "Охранник",
+                image: "guard.jpg",
+                text: "<b>Стойте! Вы кто такие? Кто идет? Предъявите пропуск!</b>",
+                choices: [
+                    { text: "Послушать, что ответит Катя", next: "guard_katya_reply" }
+                ]
+            },
+            guard_katya_reply: {
+                name: "Катя",
+                image: "corridor.jpg",
+                text: "",
+                choices: [
+                    { text: "Послушать охранника", next: "guard_pass" }
+                ],
+                onEnter: () => {
+                    story.guard_katya_reply.text = playerGender === 'male' 
+                        ? "Ой, извините! Это со мной. Он — абитуриент, пришел посмотреть Академию перед поступлением. У него еще нет пропуска, он только знакомится с вузом." 
+                        : "Ой, извините! Это со мной. Она — абитуриентка, пришла посмотреть Академию перед поступлением. У нее еще нет пропуска, она только знакомится с вузом.";
+                }
+            },
+            guard_pass: {
+                name: "Охранник",
+                image: "guard.jpg",
+                text: "А, абитуриент! Ну проходите, только не задерживайтесь.",
+                choices: [
+                    { text: "👉 Пройти в академию", next: "tour_lab_choice" }
+                ]
+            },
+            tour_lab_choice: {
+                name: "Катя",
+                image: "corridor.jpg",
+                text: "Куда бы ты хотела пойти?",
+                choices: [
+                    { text: "🧪 Лаборатория SMART-технологий и 3D моделирования", next: "tour_lab1" },
+                    { text: "🔐 Лаборатория биометрической идентификации", next: "tour_lab2" }
+                ]
+            },
+            tour_lab1: {
+                name: "Катя",
+                image: "lab_3d.jpg",
+                text: "Смотри, это многофункциональная лаборатория SMART-технологий и 3D моделирования. Здесь всё современно: 3D-принтеры, датчики, микроконтроллеры. И система «Умный дом» с Алисой!",
+                choices: [
+                    { text: "👉 Посмотреть вторую лабораторию", next: "tour_lab2" }
+                ]
+            },
+            tour_lab2: {
+                name: "Катя",
+                image: "lab_bio.jpg",
+                text: "А это — учебная лаборатория биометрической идентификации и видеоаналитики. На стенах умные камеры, которые распознают лица и анализируют толпу. Как в детективе!",
+                choices: [
+                    { text: "🍲 Заглянуть в студенческую столовую", next: "canteen" }
+                ]
+            },
+            canteen: {
+                name: "Катя",
+                image: "canteen.jpg",
+                text: "После экскурсии нужно подкрепиться! Это наша столовая. Здесь всегда свежая выпечка, обеды. Цены студенческие, порции большие. Что будешь?",
+                choices: [
+                    { text: "🥐 Взять свежую булочку и чай", next: "corridor_to_class" },
+                    { text: "🍲 Взять полноценный обед", next: "corridor_to_class" },
+                    { text: "🚶‍♂️ Просто осмотреться и пойти дальше", next: "corridor_to_class" }
+                ]
+            },
+            corridor_to_class: {
+                name: "Катя",
+                image: "corridor.jpg",
+                text: "Ой, как быстро пролетело время! Смотри, уже начинается моя первая пара. Пойдем скорее к аудитории 432.",
+                choices: [
+                    { text: "🚪 Подойди к двери аудитории", next: "class_door_scene" }
+                ]
+            },
+            class_door_scene: {
+                name: "Катя",
+                image: "class_door.jpg",
+                text: "Вот наша аудитория. Заходи со мной, я покажу, как проходят занятия!",
+                choices: [
+                    { text: "🚪 Зайти в аудиторию", next: "class_room_intro" }
+                ]
+            },
+            class_room_intro: {
+                name: "Преподаватель / Система",
+                image: "class_room.jpg",
+                text: "Вы зашли в учебную аудиторию. Идет пара. Преподаватель вывел на экран практическое задание для студентов по маркетингу. Вы решаете попробовать свои силы в мини-тесте!",
+                choices: [
+                    { text: "📝 Начать тест (Задание 1)", next: "quiz_1" }
+                ]
+            },
+            quiz_1: {
+                name: "Практикум: Задание 1 из 3",
+                image: "class_room.jpg",
+                text: "🍫 <b>Шоколад с треугольной формой, в логотипе которого спрятан медведь:</b>",
+                choices: [
+                    { text: "A) Milka", next: "quiz_1_wrong" },
+                    { text: "B) Toblerone", next: "quiz_1_correct" },
+                    { text: "C) Ritter Sport", next: "quiz_1_wrong" },
+                    { text: "D) Lindt", next: "quiz_1_wrong" }
+                ]
+            },
+            quiz_1_correct: {
+                name: "Результат",
+                image: "class_room.jpg",
+                text: "✅ Верно! Это Toblerone.",
+                choices: [{ text: "Следующий вопрос ➡️", next: "quiz_2" }],
+                onEnter: () => { correctCount++; }
+            },
+            quiz_1_wrong: {
+                name: "Результат",
+                image: "class_room.jpg",
+                text: "❌ Неправильно. Правильный ответ: B) Toblerone.",
+                choices: [{ text: "Следующий вопрос ➡️", next: "quiz_2" }]
+            },
+            quiz_2: {
+                name: "Практикум: Задание 2 из 3",
+                image: "class_room.jpg",
+                text: "💻 <b>Электроника, в логотипе которой скрыто «улыбающееся лицо»:</b>",
+                choices: [
+                    { text: "A) Samsung", next: "quiz_2_wrong" },
+                    { text: "B) Sony", next: "quiz_2_wrong" },
+                    { text: "C) LG", next: "quiz_2_correct" },
+                    { text: "D) Panasonic", next: "quiz_2_wrong" }
+                ]
+            },
+            quiz_2_correct: {
+                name: "Результат",
+                image: "class_room.jpg",
+                text: "✅ Верно! Это LG.",
+                choices: [{ text: "Следующий вопрос ➡️", next: "quiz_3" }],
+                onEnter: () => { correctCount++; }
+            },
+            quiz_2_wrong: {
+                name: "Результат",
+                image: "class_room.jpg",
+                text: "❌ Неправильно. Правильный ответ: C) LG.",
+                choices: [{ text: "Следующий вопрос ➡️", next: "quiz_3" }]
+            },
+            quiz_3: {
+                name: "Практикум: Задание 3 из 3",
+                image: "class_room.jpg",
+                text: "🍏 <b>Слоган компании Apple (Эппл):</b><br>- A) «Думай иначе»<br>- B) «Связывая людей»<br>- C) «Лучшее или ничего»<br>- D) «Просто сделай это»",
+                choices: [
+                    { text: "A) «Думай иначе»", next: "quiz_3_wrong" },
+                    { text: "B) «Связывая людей»", next: "quiz_3_wrong" },
+                    { text: "C) «Лучшее или ничего»", next: "quiz_3_wrong" },
+                    { text: "D) «Просто сделай это»", next: "quiz_3_correct" }
+                ]
+            },
+            quiz_3_correct: {
+                name: "Результат",
+                image: "class_room.jpg",
+                text: "✅ Верно!",
+                choices: [{ text: "📊 Посмотреть итоги теста", next: "quiz_finish" }],
+                onEnter: () => { correctCount++; }
+            },
+            quiz_3_wrong: {
+                name: "Результат",
+                image: "class_room.jpg",
+                text: "❌ Неправильно.",
+                choices: [{ text: "📊 Посмотреть итоги теста", next: "quiz_finish" }]
+            },
+            quiz_finish: {
+                name: "Катя",
+                image: "katya.jpg",
+                text: "",
+                choices: [
+                    { text: "🔄 Начать заново", next: "reload_page" }
+                ],
+                onEnter: () => {
+                    document.getElementById('dialogue-text').innerHTML = `✨ Вот и подошел к концу наш ознакомительный день в БГАС!<br><br>📊 <b>Результаты теста:</b> правильных ответов: <b>${correctCount} из 3</b>.<br><br>Надеюсь, тебе понравилось у нас. Ждем тебя в числе студентов!`;
+                    correctCount = 0;
+                }
+            },
+            meet_no_start: {
+                name: "Самостоятельная прогулка",
+                image: "academy.jpg",
+                text: "Ну хорошо-хорошо, гордая самостоятельность — это тоже неплохо! Катя пошла на пары, а вы остались на улице перед главным входом.",
+                choices: [
+                    { text: "🚪 Зайти в академию", next: "solo_guard_1" }
+                ]
+            },
+            solo_guard_1: {
+                name: "Охранник",
+                image: "guard.jpg",
+                text: "",
+                choices: [
+                    { text: "1. Я абитуриент, пришел посмотреть Академию", next: "solo_guard_accepted" },
+                    { text: "2. Ой, а я забыл пропуск дома...", next: "solo_guard_forgot" }
+                ],
+                onEnter: () => {
+                    story.solo_guard_1.text = playerGender === 'male' 
+                        ? "Вы зашли в академию. Вдруг к вам подходит охранник на входе:<br><br><b>— Молодой человек, а вы куда направляетесь? У нас на территории Академии пропускной режим. Предъявите пропуск!</b>" 
+                        : "Вы зашли в академию. Вдруг к вам подходит охранник на входе:<br><br><b>— Девушка, а вы куда направляетесь? У нас на территории Академии пропускной режим. Предъявите пропуск!</b>";
+                }
+            },
+            solo_guard_accepted: {
+                name: "Охранник",
+                image: "guard.jpg",
+                text: "",
+                choices: [
+                    { text: "👉 Пройти в главный холл", next: "solo_hall" }
+                ],
+                onEnter: () => {
+                    story.solo_guard_accepted.text = playerGender === 'male' 
+                        ? "А, абитуриент! Ну проходите, только не задерживайтесь." 
+                        : "А, абитуриентка! Это другое дело, проходите. Только не шумите, идет учебный процесс!";
+                }
+            },
+            solo_guard_forgot: {
+                name: "Охранник",
+                image: "guard.jpg",
+                text: "Забыли? Так не пойдет. Без документов я вас пустить не могу.<br><br><i>Охранник строго смотрит на вас. Что будете делать?</i>",
+                choices: [
+                    { text: "1. Хорошо, я схожу за пропуском (Завершить игру)", next: "finish_game_over" },
+                    { text: "2. Подождите, я абитуриент! Можете меня пропустить?", next: "solo_guard_softened" }
+                ]
